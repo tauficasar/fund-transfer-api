@@ -59,7 +59,87 @@ php bin/console doctrine:migrations:migrate
 
 ```bash
 symfony server:start
+or
+php -S localhost:8000 -t public
 ```
+
+---
+
+## 📌 API Endpoints
+
+Create Account
+POST /api/v1/accounts
+Body
+{
+  "balance": "1000.00",
+  "currency": "INR"
+}
+
+Transfer Funds
+POST /api/v1/transfers
+{
+  "fromAccountId": "uuid",
+  "toAccountId": "uuid",
+  "currency": "INR",
+  "amount": "200.00",
+  "idempotencyKey": "unique-key"
+}
+
+Example Success Response
+{
+  "id": "uuid",
+  "fromAccount": "uuid",
+  "toAccount": "uuid",
+  "amount": "200.00",
+  "currency": "INR",
+  "status": "completed",
+  "createdAt": "2026-02-09T13:11:28+00:00",
+  "failureReason": null
+}
+
+---
+
+## ❌ Error Handling
+
+All errors are returned in a consistent JSON format.
+
+Validation Error (422)
+{
+  "errors": {
+    "fromAccountId": ["This is not a valid UUID."],
+    "toAccountId": ["This is not a valid UUID."]
+  }
+}
+
+Business Rule Error (422)
+{
+    "error": {
+        "code": "INSUFFICIENT_BALANCE",
+        "message": "Insufficient balance. Available 9790.00, requested 100000.00"
+    }
+}
+
+Server Error (500)
+{
+  "error": {
+    "code": "INTERNAL_ERROR",
+    "message": "Internal server error"
+  }
+}
+
+---
+
+🔒 Reliability & Safety
+
+Transactions ensure atomic fund movement
+
+Pessimistic locking prevents concurrent overdrafts
+
+Idempotency keys avoid duplicate transfers
+
+Redis + DB fallback ensures idempotency safety
+
+Central exception subscriber guarantees consistent API responses
 
 ---
 
@@ -68,12 +148,57 @@ symfony server:start
 ```bash
 php bin/phpunit
 ```
+Covered scenarios include:
+
+Successful transfers
+
+Validation failures
+
+Insufficient balance
+
+Idempotent replay
+
+Account creation errors
+
+---
+
+🧠 Architecture Notes
+
+DTOs (src/Dto) separate validation from controllers
+
+Business logic lives in services (thin controllers)
+
+Domain exceptions represent business rules
+
+Single global exception subscriber for API consistency
+
+Tests interact with real database state (integration tests)
+
+---
+
+🚀 Possible Improvements
+
+If extended further, I would add:
+
+Rate limiting per account
+
+Currency conversion support
+
+Async processing with message queues
+
+Account-level daily transfer limits
+
+Read replicas for scaling reads
+
+OpenAPI / Swagger documentation
 
 ---
 
 ## ⏱ Time Spent
 
 ~6–8 hours
+
+(Includes design, implementation, debugging, testing, and documentation)
 
 ---
 
