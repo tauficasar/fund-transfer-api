@@ -51,6 +51,21 @@ class Transfer
         $this->createdAt = new \DateTimeImmutable();
     }
 
+    public function __construct(
+        Account $fromAccount,
+        Account $toAccount,
+        string $amount,
+        string $currency,
+        ?string $idempotencyKey = null
+    ) {
+        $this->fromAccount = $fromAccount;
+        $this->toAccount = $toAccount;
+        $this->amount = $amount;
+        $this->currency = $currency;
+        $this->idempotencyKey = $idempotencyKey;
+        $this->status = TransferStatusEnum::PENDING;
+    }
+
     public function getId(): ?Uuid
     {
         return $this->id;

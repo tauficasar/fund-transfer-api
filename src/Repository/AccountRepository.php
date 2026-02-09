@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Account;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\LockMode;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -23,6 +24,20 @@ class AccountRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    public function findById(string $id): ?Account
+    {
+        return $this->findOneBy(['id' => $id]);
+    }
+
+    public function findByIdForUpdate(string $id): ?Account
+    {
+        return $this->getEntityManager()->find(
+            Account::class,
+            $id,
+            LockMode::PESSIMISTIC_WRITE
+        );
     }
 
 }

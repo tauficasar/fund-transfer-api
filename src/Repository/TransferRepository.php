@@ -16,28 +16,14 @@ class TransferRepository extends ServiceEntityRepository
         parent::__construct($registry, Transfer::class);
     }
 
-//    /**
-//     * @return Transfer[] Returns an array of Transfer objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('t')
-//            ->andWhere('t.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('t.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    public function findById(string $Id): ?Transfer
+    {
+        return $this->findOneBy(['id' => $Id]);
+    }
 
-//    public function findOneBySomeField($value): ?Transfer
-//    {
-//        return $this->createQueryBuilder('t')
-//            ->andWhere('t.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    public function findByIdempotencyKey(string $idempotencyKey): ?Transfer
+    {
+        return $this->findOneBy(['idempotencyKey' => $idempotencyKey]);
+    }
+
 }

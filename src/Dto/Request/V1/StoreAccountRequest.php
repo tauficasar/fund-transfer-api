@@ -14,6 +14,10 @@ final readonly class StoreAccountRequest
             pattern: '/^\d+(\.\d{1,2})?$/',
             message: 'balance can have at most 2 decimal places'
         )]
+        #[Assert\LessThanOrEqual(
+            value: '9999999999999999.99',
+            message: 'balance exceeds maximum allowed value'
+        )]
         public string $balance,
 
         #[Assert\NotBlank(message: 'currency is required')]
